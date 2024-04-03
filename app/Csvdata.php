@@ -3,6 +3,7 @@
 namespace App;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Csvdata extends Model
 {
@@ -19,6 +20,6 @@ class Csvdata extends Model
      * @var array
      */
     protected $fillable = [
-        'name', 'email',
+        'name', 'email', 'registration_date',
     ];
 }

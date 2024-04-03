@@ -17,6 +17,7 @@ class CreateCsvdataTable extends Migration
             $table->increments('id');
             $table->string('name');
             $table->string('email');
+            $table->dateTime('registration_date');
             $table->timestamps();
         });
         
