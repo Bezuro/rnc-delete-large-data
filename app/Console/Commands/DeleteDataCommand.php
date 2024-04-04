@@ -44,14 +44,12 @@ class DeleteDataCommand extends Command
 
             if ($this->isValidDate($date, 'Y-m-d H:i:s')) {
 
-                // Починаємо видалення даних по частинах
-                $batchSize = 1000; // Кількість рядків для видалення за один раз
+                $batchSize = 1000; // 1000
                 $deletedRows = 0;
 
                 do {
-                    // Видаляємо пакет даних
                     $deleted = \DB::table($tableName)
-                        ->where('created_at', '<=', $date)
+                        ->where('created_at', '>=', $date) // created_at registration_date
                         ->limit($batchSize)
                         ->delete();
 
@@ -59,9 +57,6 @@ class DeleteDataCommand extends Command
                 } while ($deleted > 0);
                 
                 $this->info("Data deleted successfully from table: $tableName. Total rows deleted: $deletedRows");
-
-                // \DB::table($tableName)->where('created_at', '<=', $date)->delete();
-                // $this->info("Data deleted successfully from table: $tableName");
 
                 // $this->info("All data is valid");
             } else {
