@@ -16,10 +16,10 @@ php artisan delete:data tableName "YYYY-MM-DD HH:MI:SS"
 You can customize the behavior of the command by adjusting the `$batchSize` variable in the code located in `app/Console/Commands/DeleteDataCommand.php`. This variable determines the number of records deleted in a single batch operation. Changing this value may affect the performance and resource consumption of the command.
 
 ### Example
-To delete records from the users table created before January 1, 2023, you can execute the following command:
+To delete records from the users table created after January 1, 2024, you can execute the following command:
 
 ```
-php artisan delete:data users "2023-01-01 00:00:00"
+php artisan delete:data users "2024-01-01 00:00:00"
 ```
 
 #### Note
