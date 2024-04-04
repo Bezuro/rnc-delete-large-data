@@ -4,6 +4,7 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+    image: bezuro/rnc-delete-large-data:latest
     ports:
       - '80:80'
     environment:
