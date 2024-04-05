@@ -4,9 +4,11 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
-    image: bezuro/rnc-delete-large-data:latest
-    ports:
-      - '80:80'
+    # image: bezuro/rnc-delete-large-data:latest
+    # ports:
+    #   - '80:80'
+    volumes:
+      - .:/var/www/html
     environment:
       DB_CONNECTION: mysql
       DB_HOST: mysql
@@ -16,6 +18,20 @@ services:
       DB_PASSWORD: 1337
     depends_on:
       - mysql
+    networks:
+      - app-network
+
+  nginx:
+    image: nginx:latest
+    ports:
+      - '80:80'
+    volumes:
+      - .:/var/www/html
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    depends_on:
+      - app
+    networks:
+      - app-network
 
   mysql:
     image: mysql:5.7
@@ -28,6 +44,8 @@ services:
       MYSQL_USER: 'laravel'
       MYSQL_PASSWORD: '1337'
       MYSQL_ROOT_PASSWORD: '1337'
+    networks:
+      - app-network
 
   phpmyadmin:
     depends_on:
@@ -38,6 +56,12 @@ services:
       - '8080:80'
     environment:
       PMA_HOST: mysql
+    networks:
+      - app-network
+
+networks:
+  app-network:
+    driver: bridge
 
 volumes:
   db_data:
