@@ -44,11 +44,12 @@ class DeleteDataCommand extends Command
 
         if (!\Schema::hasTable($tableName)) {
             $this->error("Table '$tableName' does not exist in the database.");
-            return
+            return;
         }
 
         if (!$this->isValidDate($date, 'Y-m-d H:i:s')) {
             $this->error("Invalid date format. Please provide a valid date in format: Y-m-d H:i:s.");
+            return;
         }
 
         $deletedRows = 0;
