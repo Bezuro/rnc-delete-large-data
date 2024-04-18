@@ -57,7 +57,7 @@ class DeleteDataCommand extends Command
         do {
             $deleted = \DB::table($tableName)
                 ->where('created_at', '>=', $date) // created_at registration_date
-                ->limit(self:BATCHSIZE)
+                ->limit(self::BATCHSIZE)
                 ->delete();
             $deletedRows += $deleted;
         } while ($deleted > 0);
