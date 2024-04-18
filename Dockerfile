@@ -1,6 +1,9 @@
 # Using the official PHP image
 FROM php:7.4-fpm
 
+ARG WWWGROUP=1000
+ARG WWWUSER=1000
+
 # Set the working directory
 WORKDIR /var/www/html
 
@@ -9,6 +12,7 @@ RUN apt-get update && apt-get install -y \
     zip \
     unzip \
     curl \
+    git \
     libxml2-dev \
     libzip-dev \
     libonig-dev \
@@ -16,6 +20,9 @@ RUN apt-get update && apt-get install -y \
 
 # Install Composer
 COPY --from=composer/composer:latest-bin /composer /usr/bin/composer
+
+RUN groupadd --force -g $WWWGROUP sail
+RUN useradd -ms /bin/bash --no-user-group -g $WWWGROUP -u $WWWUSER sail
 
 # Copy project files into the container
 COPY . /var/www/html

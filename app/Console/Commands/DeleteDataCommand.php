@@ -6,6 +6,8 @@ use Illuminate\Console\Command;
 
 class DeleteDataCommand extends Command
 {
+    const BATCHSIZE = 1000; //1000
+
     /**
      * The name and signature of the console command.
      *
@@ -40,34 +42,31 @@ class DeleteDataCommand extends Command
         $tableName = $this->argument('table');
         $date = $this->argument('date');
 
-        if (\Schema::hasTable($tableName)) {
-
-            if ($this->isValidDate($date, 'Y-m-d H:i:s')) {
-
-                $batchSize = 1000; // 1000
-                $deletedRows = 0;
-
-                do {
-                    $deleted = \DB::table($tableName)
-                        ->where('created_at', '>=', $date) // created_at registration_date
-                        ->limit($batchSize)
-                        ->delete();
-
-                    $deletedRows += $deleted;
-                } while ($deleted > 0);
-                
-                $this->info("Data deleted successfully from table: $tableName. Total rows deleted: $deletedRows");
-
-                // $this->info("All data is valid");
-            } else {
-                $this->error("Invalid date format. Please provide a valid date in format: Y-m-d H:i:s.");
-            }
-        } else {
+        if (!\Schema::hasTable($tableName)) {
             $this->error("Table '$tableName' does not exist in the database.");
+            return
         }
+
+        if (!$this->isValidDate($date, 'Y-m-d H:i:s')) {
+            $this->error("Invalid date format. Please provide a valid date in format: Y-m-d H:i:s.");
+        }
+
+        $deletedRows = 0;
+
+        do {
+            $deleted = \DB::table($tableName)
+                ->where('created_at', '>=', $date) // created_at registration_date
+                ->limit(self:BATCHSIZE)
+                ->delete();
+            $deletedRows += $deleted;
+        } while ($deleted > 0);
+                
+        $this->info("Data deleted successfully from table: $tableName. Total rows deleted: $deletedRows");
+
+        // $this->info("All data is valid"); 
     }
 
-    private function isValidDate($value, $format = 'Y-m-d H:i:s')
+    private function isValidDate($value, $format = 'Y-m-d H:i:s') : bool
     {
         $date = \DateTime::createFromFormat($format, $value);
         return $date && $date->format($format) === $value;
